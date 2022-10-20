@@ -10,7 +10,6 @@ namespace DurationCalculator
     public class FileController
     {
         private string path;
-
         public string OutputText { get; set; }
         public List<GradeDurationModel> GradeDurations { get; set; }
 
@@ -25,10 +24,13 @@ namespace DurationCalculator
         /// Get total times based on what level/grade is in the file
         /// </summary>
         /// <returns>List of strings</returns>
-        public List<string> GetGradeTotalTimes()
+        public List<string[]> GetGradeTotalTimes()
         {
             GetText();
-            List<string> totalTimesToString = new List<string>();
+            List<string[]> totalTimesToString = new List<string[]>();
+
+            
+
             int GradeDurationsLength=GradeDurations.Count;
             int levelsLength = GradeDurations[0]._levels.Count;
             int[][] times = new int[levelsLength][];
@@ -39,15 +41,23 @@ namespace DurationCalculator
                 {
                     if (GradeDurations[i]._levels[j] == true)
                     {
-                        times[j]=StringDateConvertor.TimeSum(times[j], GradeDurations[i]._duration);
+                        times[j]=StringDateCalculator.TimeSum(times[j], GradeDurations[i]._duration);
                     }
                 }
             }
             
             foreach(var time in times)
             {
-                var normalized=StringDateConvertor.TimeArrayNormalize(time);
-                totalTimesToString.Add($"{normalized[0]}h {normalized[1]}m");
+                int[] totalTimeLearning=StringDateCalculator.TimeArrayNormalize(time);
+                int[] totalTimeOverHead = StringDateCalculator.TimeWithOverhead(totalTimeLearning);
+                int[] averageTimeWeek = StringDateCalculator.AverageTimeWeek(totalTimeOverHead);
+                int[] averageTimeDay = StringDateCalculator.AverageTimeDay(totalTimeOverHead);
+                string[] alltimes = { $"{totalTimeLearning[0]}h {totalTimeLearning[1]}m",
+                    $"{totalTimeOverHead[0]}h {totalTimeOverHead[1]}m" ,
+                    $"{averageTimeWeek[0]}h {averageTimeWeek[1]}m" ,
+                    $"{averageTimeDay[0]}h {averageTimeDay[1]}m" };
+
+                totalTimesToString.Add(alltimes);
             }
             return totalTimesToString;
 
@@ -80,7 +90,7 @@ namespace DurationCalculator
             foreach (var row in Rows)
             {
                 var duration = new GradeDurationModel();
-                duration._duration = StringDateConvertor.ConvertStringToIntArray(row[0]);
+                duration._duration = StringDateCalculator.ConvertStringToIntArray(row[0]);
                 for (int i = 1; i < row.Length; i++)
                 {
                     

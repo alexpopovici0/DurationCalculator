@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace DurationCalculator
 {
-    public static class StringDateConvertor
+    public static class StringDateCalculator
     {
+
         /// <summary>
         /// Convert string into array of int[3]
         /// </summary>
@@ -65,15 +67,53 @@ namespace DurationCalculator
         /// <returns></returns>
         public static int[] TimeArrayNormalize(int[] time)
         {
+            int[] temp = (int[])time.Clone();
             for (int i = 2; i >=1; i--)
             {
-                while (time[i] > 60)
+                while (temp[i] >= 60)
                 {
-                    time[i-1]++;
-                    time[i] = time[i] - 60;
+                    temp[i-1]++;
+                    temp[i] = temp[i] - 60;
                 }
             }
-            return time;
+            return temp;
         }
+
+        public static int[] TimeWithOverhead(int[] time)
+        {
+            int[] temp = (int[])time.Clone();
+            for (int i = 0; i < temp.Length; i++)
+            {
+                temp[i] = temp[i] + temp[i] / 2;
+            }
+            return TimeArrayNormalize(temp);
+        }
+
+        public static int[] AverageTimeDay(int[] time)
+        {
+            int[] temp = (int[])time.Clone();
+            temp = ChangeHoursToMinutes(temp, 45);
+            return TimeArrayNormalize(temp);
+        }
+
+        public static int[] AverageTimeWeek(int[] time)
+        {
+            int[] temp = (int[])time.Clone();
+            temp = ChangeHoursToMinutes(temp, 9);
+            return TimeArrayNormalize(temp);
+        }
+
+        private static int [] ChangeHoursToMinutes(int[] time,int division)
+        {
+            int[] temp = (int[])time.Clone();
+            temp[1] = temp[0] * 60;
+            temp[2] = temp[1] * 60;
+            temp[2] = temp[2] / division;
+            temp[0] = 0;
+            temp[1] = 0;
+            return temp;
+        }
+
+
     }
 }
