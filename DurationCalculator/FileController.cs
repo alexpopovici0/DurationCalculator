@@ -58,7 +58,6 @@ namespace DurationCalculator
         /// </summary>
         private void GetText()
         {
-            Console.WriteLine(path);
             if( File.Exists(path))
             {
                 OutputText=File.ReadAllText(path);
