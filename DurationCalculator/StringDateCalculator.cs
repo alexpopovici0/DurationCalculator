@@ -82,35 +82,34 @@ namespace DurationCalculator
         public static int[] TimeWithOverhead(int[] time)
         {
             int[] temp = (int[])time.Clone();
-            for (int i = 0; i < temp.Length; i++)
-            {
-                temp[i] = temp[i] + temp[i] / 2;
-            }
+
+            temp[1] = temp[1]+ temp[0] * 60;
+            temp[1] = (int)(((double)temp[1] / 2) * 3);
+            temp[0] = 0;
+
             return TimeArrayNormalize(temp);
         }
 
         public static int[] AverageTimeDay(int[] time)
         {
             int[] temp = (int[])time.Clone();
-            temp = ChangeHoursToMinutes(temp, 45);
+            temp = ChangeHoursMinutesToSeconds(temp, 45);
             return TimeArrayNormalize(temp);
         }
 
         public static int[] AverageTimeWeek(int[] time)
         {
             int[] temp = (int[])time.Clone();
-            temp = ChangeHoursToMinutes(temp, 9);
+            temp = ChangeHoursMinutesToSeconds(temp, 9);
             return TimeArrayNormalize(temp);
         }
 
-        private static int [] ChangeHoursToMinutes(int[] time,int division)
+        private static int [] ChangeHoursMinutesToSeconds(int[] time,int division)
         {
             int[] temp = (int[])time.Clone();
-            temp[1] = temp[0] * 60;
-            temp[2] = temp[1] * 60;
-            temp[2] = temp[2] / division;
+            temp[1] = temp[1] + temp[0] * 60;
+            temp[1] = (int)((double)temp[1] / division);
             temp[0] = 0;
-            temp[1] = 0;
             return temp;
         }
 
